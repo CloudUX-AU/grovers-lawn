@@ -1,0 +1,5 @@
+services:
+  grover:
+    build: .
+    ports:
+      - "8765:80"

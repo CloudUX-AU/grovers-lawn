@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grover's Lawn</title>
+    <link rel="stylesheet" href="styles.css?v=splash" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="top">
+        <div>
+          <p class="eyebrow">Saturday job</p>
+          <h1>Grover's Lawn</h1>
+        </div>
+        <div class="difficulty" id="diff" role="group" aria-label="Difficulty">
+          <span>Difficulty</span>
+          <button type="button" data-diff="easy">Easy</button>
+          <button type="button" data-diff="normal" class="on">Normal</button>
+          <button type="button" data-diff="hard">Hard</button>
+        </div>
+        <p class="round" id="round-label">Round 1</p>
+      </header>
+
+      <section class="hud" aria-label="Game status">
+        <div class="stat">
+          <span>Mowers</span>
+          <div class="pips" id="pips"></div>
+        </div>
+        <div class="stat">
+          <span>Truck</span>
+          <strong id="timer">1:30</strong>
+        </div>
+        <div class="stat stat-grow">
+          <span>Catcher <em id="catcher-label">0/16</em></span>
+          <div class="bar"><div id="catcher-fill"></div></div>
+        </div>
+        <div class="stat">
+          <span>Left</span>
+          <strong id="left">0</strong>
+        </div>
+        <div class="stat">
+          <span>Score</span>
+          <strong id="score">0</strong>
+        </div>
+        <div class="stat">
+          <span>Grover</span>
+          <strong id="status">Dry</strong>
+        </div>
+      </section>
+
+      <div class="stage" id="stage" tabindex="0">
+        <canvas id="game" width="1100" height="720"></canvas>
+        <div class="overlay" id="overlay">
+          <div class="card" id="card"></div>
+        </div>
+      </div>
+
+      <p class="controls" id="hint">
+        Arrows or WASD move. Space hops off the mower and back on. E shovels a poo, dumps it, or empties the catcher.
+      </p>
+    </main>
+    <script src="src/world.js"></script>
+    <script src="src/render.js"></script>
+    <script src="src/main.js"></script>
+  </body>
+</html>
