@@ -252,7 +252,10 @@ function retargetDog(world, dog, avoid) {
 function scootDogs(world, x, y) {
   const avoid = [{ x, y }];
   for (const dog of world.dogs) {
-    if (dog.x === x && dog.y === y) retargetDog(world, dog, avoid);
+    if (dog.x === x && dog.y === y) {
+      retargetDog(world, dog, avoid);
+      soundBark();
+    }
   }
 }
 
@@ -261,6 +264,7 @@ function dropPoo(world, dog) {
   if (!isGrass(world, dog.x, dog.y)) return;
   if (hasPoo(world, dog.x, dog.y)) return;
   world.poos.push({ x: dog.x, y: dog.y, born: world.clock, smeared: false });
+  soundPoo();
 }
 
 function updateWorld(world, dt, actors) {
@@ -310,6 +314,7 @@ function updateWorld(world, dt, actors) {
     if (dog.pooIn <= 0 && world.poos.length < 4 && isGrass(world, dog.x, dog.y) && !hasPoo(world, dog.x, dog.y)) {
       dog.mode = "squat";
       dog.timer = 0.58;
+      soundBark();
       continue;
     }
     if (dog.timer <= 0) {
@@ -317,9 +322,11 @@ function updateWorld(world, dt, actors) {
       if (roll < 0.14) {
         dog.mode = "spin";
         dog.timer = 0.55;
+        soundBark();
       } else if (roll < 0.28) {
         dog.mode = "sniff";
         dog.timer = 0.42;
+        soundBark();
       } else if (roll < 0.92) {
         const options = grassNeighbors(world, dog.x, dog.y, occupied);
         if (options.length) {

@@ -95,6 +95,7 @@ function makeGame(round, score, mowers) {
 
 let difficulty = "normal";
 let game = makeGame(1, 0, 3);
+let nextBark = 2.4;
 
 function setDifficulty(id) {
   if (!DIFFICULTY[id] || id === difficulty) return;
@@ -186,6 +187,7 @@ function arrive() {
     if (poo) poo.smeared = true;
     game.stall = 0.72;
     floater("Poo!", m, "#6a3418");
+    soundGrrr();
     return;
   }
   if (game.catcher >= game.capacity) {
@@ -236,12 +238,14 @@ function interact() {
     game.roundPoo += 1;
     game.score += 100;
     floater("+100", game.player, "#1f6b38");
+    soundPoo();
     return;
   }
   if (!game.carryingPoo && hasPoo(game.world, game.player.x, game.player.y)) {
     removePoo(game.world, game.player.x, game.player.y);
     game.carryingPoo = true;
     floater("Got it", game.player, "#6a3418");
+    soundPoo();
   }
 }
 
@@ -368,9 +372,27 @@ function update(dt) {
     for (const dog of game.world.dogs) dog.anim += dt;
   }
 
+  const wasWet = game.wet;
   const foot = standingTile(game.riding ? game.mower : game.player);
   game.wet = game.mode === "play" && sprayHits(game.world, foot.x, foot.y);
+  if (game.wet && !wasWet) soundGrrr();
   if (game.wet) game.soaked = true;
+
+  if (game.mode === "play" || game.mode === "intro") {
+    nextBark -= dt;
+    if (nextBark <= 0 && game.world.dogs.length) {
+      soundBark();
+      nextBark = 2.2 + Math.random() * 2.5;
+    }
+  }
+
+  const spraying = game.world.sprinklers.some((sprinkler) => {
+    if (!sprinklerOn(game.world.clock, sprinkler.i, game.world.params.sprinkleFor)) return false;
+    return Math.max(Math.abs(sprinkler.x - foot.x), Math.abs(sprinkler.y - foot.y)) <= 2;
+  });
+  const engineOn = (game.mode === "play" || game.mode === "intro") && game.riding && game.mode !== "boom";
+  const rumble = !engineOn ? 0 : game.stall > 0 ? 0.06 : game.cuttingT > 0 || game.mower.hop < 1 ? 0.26 : 0.14;
+  soundScene(spraying && game.mode !== "over", rumble);
 
   let mood = 1;
   if (game.wet) mood = 2;
@@ -506,6 +528,7 @@ function startFromCard() {
 }
 
 function onKeyDown(e) {
+  soundStart();
   if (e.repeat) return;
   const dir = KEY_DIR[e.code];
   if (dir || e.code === "Space" || e.code === "KeyE" || e.code.startsWith("Digit")) e.preventDefault();
@@ -549,6 +572,7 @@ document.getElementById("diff").addEventListener("click", (event) => {
   els.stage.focus();
 });
 els.stage.addEventListener("click", () => {
+  soundStart();
   els.stage.focus();
   if (game.mode === "title" || game.mode === "win" || game.mode === "over") startFromCard();
 });
