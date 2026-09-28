@@ -26,7 +26,7 @@ function audio() {
     master.gain.value = 0.8;
     master.connect(audioCtx.destination);
     musicBus = audioCtx.createGain();
-    musicBus.gain.value = 0.16;
+    musicBus.gain.value = 0.42;
     musicBus.connect(master);
     effectBus = audioCtx.createGain();
     effectBus.gain.value = 0.55;
@@ -121,10 +121,15 @@ function scheduleMusic() {
 function soundStart() {
   const ctx = audio();
   if (!ctx || musicOn) return;
-  musicOn = true;
-  nextStepAt = ctx.currentTime + 0.05;
-  stepIndex = 0;
-  scheduleMusic();
+  const begin = () => {
+    if (musicOn || ctx.state !== "running") return;
+    musicOn = true;
+    nextStepAt = ctx.currentTime + 0.05;
+    stepIndex = 0;
+    scheduleMusic();
+  };
+  if (ctx.state === "running") begin();
+  else ctx.resume().then(begin);
 }
 
 function soundPoo() {

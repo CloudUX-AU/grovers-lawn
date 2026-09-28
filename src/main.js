@@ -391,7 +391,7 @@ function update(dt) {
     return Math.max(Math.abs(sprinkler.x - foot.x), Math.abs(sprinkler.y - foot.y)) <= 2;
   });
   const engineOn = (game.mode === "play" || game.mode === "intro") && game.riding && game.mode !== "boom";
-  const rumble = !engineOn ? 0 : game.stall > 0 ? 0.06 : game.cuttingT > 0 || game.mower.hop < 1 ? 0.26 : 0.14;
+  const rumble = !engineOn ? 0 : game.stall > 0 ? 0.1 : game.cuttingT > 0 || game.mower.hop < 1 ? 0.38 : 0.22;
   soundScene(spraying && game.mode !== "over", rumble);
 
   let mood = 1;
@@ -563,6 +563,7 @@ function onKeyUp(e) {
   if (i >= 0) held.splice(i, 1);
 }
 
+window.addEventListener("pointerdown", soundStart);
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 document.getElementById("diff").addEventListener("click", (event) => {
